@@ -14,12 +14,12 @@ import net.manaca.loaderqueue.adapter.URLStreamAdapter;
 import net.manaca.loaderqueue.inspector.LoaderInspector;
 
 [SWF(width="500", height="376", backgroundColor="#FFFFFF")]
-public class LoadingQueueDemo extends Sprite
+public class LoaderQueueDemo extends Sprite
 {
     private var loaderQueue:LoaderQueue;
     private var loaderInspector:LoaderInspector;
     
-    public function LoadingQueueDemo()
+    public function LoaderQueueDemo()
     {
         stage.align = StageAlign.TOP_LEFT;
         stage.scaleMode = StageScaleMode.NO_SCALE;
