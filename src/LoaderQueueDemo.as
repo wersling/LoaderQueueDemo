@@ -3,8 +3,10 @@ package
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
+import flash.events.Event;
 import flash.net.URLRequest;
 
+import net.manaca.loaderqueue.LoaderProgress;
 import net.manaca.loaderqueue.LoaderQueue;
 import net.manaca.loaderqueue.LoaderQueueEvent;
 import net.manaca.loaderqueue.adapter.BackupLoaderAdapter;
@@ -24,13 +26,12 @@ public class LoaderQueueDemo extends Sprite
         stage.align = StageAlign.TOP_LEFT;
         stage.scaleMode = StageScaleMode.NO_SCALE;
 
-        //初始化LoaderQueue，2线程， 延迟100毫秒
+        //实例化LoaderQueue，2线程， 延迟100毫秒
         loaderQueue = new LoaderQueue(2, 100, true);
         
-        //初始化LoaderInspector，并添加到舞台
+        //实例化LoaderInspector，并添加到舞台
         loaderInspector = new LoaderInspector();
         loaderInspector.loaderQueue = loaderQueue;
-        
         stage.addChild(loaderInspector);
         
         //使用Loader
@@ -42,24 +43,44 @@ public class LoaderQueueDemo extends Sprite
                 loaderInspector.alpha = .8;
                 addChild(pic1.adaptee.content);
             });
-        loaderQueue.addItem(pic1);
         
         //使用URLLoader
-        loaderQueue.addItem(
-            new URLLoaderAdapter(1, new URLRequest("images/pic2.jpg")));
+        var pic2:URLLoaderAdapter = 
+            new URLLoaderAdapter(1, new URLRequest("images/pic2.jpg"));
         
         //使用URLStream
-        loaderQueue.addItem(
-            new URLStreamAdapter(2, new URLRequest("images/pic3.jpg")));
+        var pic3:URLStreamAdapter = 
+            new URLStreamAdapter(2, new URLRequest("images/pic3.jpg"));
         
         //使用BackupLoader
-        loaderQueue.addItem(
+        var pic4:BackupLoaderAdapter = 
             new BackupLoaderAdapter(2, new URLRequest("error_file.jpg"), 
-                new URLRequest("images/pic4.jpg")));
+                new URLRequest("images/pic4.jpg"))
         
         //加载错误的文件
-        loaderQueue.addItem(
-            new URLLoaderAdapter(4, new URLRequest("error_file.jpg")));
+        var errorFile:URLLoaderAdapter = 
+            new URLLoaderAdapter(4, new URLRequest("error_file.jpg"));
+        
+        loaderQueue.addItem(pic1);
+        loaderQueue.addItem(pic2);
+        loaderQueue.addItem(pic3);
+        loaderQueue.addItem(pic4);
+        loaderQueue.addItem(errorFile);
+        
+        //实例化一个LoaderProgress
+        var loaderProgress:LoaderProgress = new LoaderProgress();
+        //监听进度事件
+        loaderProgress.addEventListener(Event.CHANGE,
+            function(event:Event):void
+            {
+                trace(loaderProgress.totalProgress);
+            });
+        loaderProgress.addItem(pic1);
+        loaderProgress.addItem(pic2);
+        loaderProgress.addItem(pic3);
+        loaderProgress.addItem(pic4);
+        loaderProgress.addItem(errorFile);
+        loaderProgress.start();
     }
 }
 }
